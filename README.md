@@ -1,5 +1,8 @@
 # Hask
 
+[![Build Status](https://travis-ci.org/billpmurphy/hask.svg)](https://travis-ci.org/billpmurphy/hask)
+
+
 Hask is a pure-Python, zero-dependencies library that mimics most of the core
 language tools from Haskell, including:
 
