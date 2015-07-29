@@ -1,6 +1,7 @@
 # Hask
 
 [![Build Status](https://travis-ci.org/billpmurphy/hask.svg)](https://travis-ci.org/billpmurphy/hask)
+[![Coverage Status](https://coveralls.io/repos/billpmurphy/hask/badge.svg?branch=master&service=github)](https://coveralls.io/github/billpmurphy/hask?branch=master)
 
 
 Hask is a pure-Python, zero-dependencies library that mimics most of the core
