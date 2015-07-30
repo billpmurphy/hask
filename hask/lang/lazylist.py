@@ -317,6 +317,23 @@ class List(collections.Sequence, Hask):
             self.__head.append(item)
             yield item
 
+    def count(self, x):
+        unify(self.__type__(), ListType(typeof(x)))
+        self.__evaluate()
+        return self.__head.count(x)
+
+    def index(self, x):
+        unify(self.__type__(), ListType(typeof(x)))
+        self.__evaluate()
+        return self.__head.index(x)
+
+    def __contains__(self, x):
+        unify(self.__type__(), ListType(typeof(x)))
+        for item in iter(self):
+            if item is x:
+                return True
+        return False
+
     def __getitem__(self, ix):
         is_slice = isinstance(ix, slice)
         if is_slice:

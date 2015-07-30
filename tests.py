@@ -1846,6 +1846,17 @@ class TestList(unittest.TestCase):
         self.assertTrue(55 in L[1,...])
         self.assertFalse(4 in L[1, 3, ..., 19])
         self.assertTrue(4 not in L[1, 3, ..., 19])
+        with self.assertRaises(te): 2L in L[1, ...]
+
+        self.assertEqual(1, L[1L, 2L, 1L].count(2L))
+        self.assertEqual(2, L[1L, 2L, 1L].count(1L))
+        self.assertEqual(0, L[1L, 2L, 1L].count(4L))
+        with self.assertRaises(te): L[1L, 2L, 3L].count(1)
+
+        self.assertEqual(1, L[1L, 2L, 1L].index(2L))
+        self.assertEqual(0, L[1L, 2L, 1L].index(1L))
+        with self.assertRaises(ve): L[1L, 2L, 3L].index(4L)
+        with self.assertRaises(te): L[1L, 2L, 3L].index(1)
 
     def test_functor(self):
         from hask.Prelude import id, map, fmap
