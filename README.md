@@ -342,6 +342,7 @@ cannot be overstated--you can get rid of a ton of nested parenthesis this way.
 
 >>> h(3.0) * h(6.0) * flip(h, 2.0) % 36.0
 9.0
+```
 
 The compose operation is also typed-checked, which makes it appealing to write
 programs in [pointfree style](https://wiki.haskell.org/Pointfree), i.e,
