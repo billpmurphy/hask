@@ -480,10 +480,10 @@ def add_first_two(x):
                 | m(m.x)               >> Nothing)
 
 
->>> add_first_two([1, 2, 3, 4, 5])
+>>> add_first_two(L[1, 2, 3, 4, 5])
 Just(3)
 
->>> add_first_two([9.0])
+>>> add_first_two(L[9.0])
 Nothing
 ```
 
@@ -784,12 +784,12 @@ returning `Nothing` if the attempt was unsuccessful:
 
 ```python
 >>> cheese = 10
->>> cheese_left = cheese >> maybe_eat >> maybe_eat >> maybe_eat
+>>> cheese_left = Just(cheese) >> maybe_eat >> maybe_eat >> maybe_eat
 >>> cheese_left
 Just(7)
 
 >>> cheese = 1
->>> cheese_left = cheese >> maybe_eat >> maybe_eat >> maybe_eat
+>>> cheese_left = Just(cheese) >> maybe_eat >> maybe_eat >> maybe_eat
 >>> cheese_left
 Nothing
 ```
@@ -804,10 +804,10 @@ the result will be returned wrapped in `Right`.
 ```python
 either_eat = in_either(eat_cheese)
 
->>> either_eat(10)
+>>> either_eat(Right(10))
 Right(9)
 
->>> either_eat(0)
+>>> either_eat(Right(0))
 Left(ValueError('Out of cheese error',))
 ```
 
