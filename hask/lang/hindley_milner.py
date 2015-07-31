@@ -1,5 +1,5 @@
 # Implementation of Hindley-Milner type inference system for Python, based on
-# by Robert Smallshire's implementation for OWL BASIC.
+# Robert Smallshire's implementation for OWL BASIC.
 #
 # Robert's original version can be found here:
 # http://smallshire.org.uk/sufficientlysmall/2010/04/11/a-hindley-milner-type-inference-implementation-in-python/
@@ -281,7 +281,7 @@ def fresh(t, non_generic):
 
 def unify_var(v1, t2):
     """
-    Unify the two type variable v1 and the type t2. Makes their types the same
+    Unify the type variable v1 and the type t2, i.e. makes their types the same
     and unifies typeclass constraints.
     Note: Must be called with v1 and t2 pre-pruned
 

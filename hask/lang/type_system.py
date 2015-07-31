@@ -120,14 +120,14 @@ def build_instance(typeclass, cls, attrs):
 
     Args:
         typeclass: The typeclass for which we are adding an instance
-        type_: The class or type to be added
+        cls: The class or type to be added
         attrs: A dict of {str:function}, mapping function names to functions
                for the typeclass instance
 
     Returns: None
 
     Raises:
-        TypeError, if type_ is not a member of all superclasses of typeclass
+        TypeError, if cls is not a member of all superclasses of typeclass
     """
     # 1) check dependencies
     for dep in typeclass.__dependencies__:
@@ -424,8 +424,8 @@ def make_type_const(name, typeargs):
     cls.__type__ = lambda self: \
         TypeOperator(cls, [TypeVariable() for i in cls.__params__])
 
-    # Unless typeclass instances or provided or derived, ADTs do not support any of these
-    # attributes, and trying to use one is a TypeError
+    # Unless typeclass instances are provided or derived, ADTs do not support
+    # any of these attributes, and trying to use one is a TypeError
     cls.__iter__ = lambda self: raise_fn(TypeError)
     cls.__contains__ = lambda self, other: raise_fn(TypeError)
     cls.__add__ = lambda self, other: raise_fn(TypeError)
@@ -456,6 +456,17 @@ def make_data_const(name, fields, type_constructor, slot_num):
     The general approach is to create a subclass of the type constructor and a
     new class created with `namedtuple`, with some of the features from
     `namedtuple` such as equality and comparison operators stripped out.
+
+    Args:
+        name: the name of the data constructor (a string)
+        fields: the list of fields that the data constructor will have (a list
+                of strings and types)
+        type_constructor: the type constructor for the data constructor's type
+        slot_num: the position of the data constructor in the `data` statement
+                  defining the new type (e.g., Nothing=0, Just=1)
+
+    Returns:
+        The new data constructor
     """
     # create the data constructor
     base = namedtuple(name, ["i%s" % i for i, _ in enumerate(fields)])
@@ -483,26 +494,44 @@ def make_data_const(name, fields, type_constructor, slot_num):
 
 def build_ADT(typename, typeargs, data_constructors, to_derive):
     """
+    Create a new algebraic data type (a type constructor and at least one data
+    constructor).
+
+    Args:
+        typename: a string representing the name of the type constructor
+        typeargs: strings representing the type parameters of the type
+                  constructor (should be unique, lowercase strings)
+        data_constructors: a list of (name, [field]) pairs representing
+                           each of the data constructors for the new type.
+        to_derive: a list of typeclasses (subclasses of Typeclass) that should
+                   be derived for the new type
+
     Returns:
         The type constructor, followed by each of the data constructors (in the
         order they were defined)
+
+    Example usage:
+        build_ADT(typename="Maybe",
+                  typeargs=["a"],
+                  data_constructors=[("Nothing", []), ("Just", ["a"])],
+                  to_derive=[Read, Show, Eq, Ord])
     """
     # 1) Create the new type constructor and data constructors
     newtype = make_type_const(typename, typeargs)
-    dcons = [make_data_const(d[0], d[1], newtype, n)
-             for n, d in enumerate(data_constructors)]
+    dcons = [make_data_const(dc_name, dc_fields, newtype, i)
+             for i, (dc_name, dc_fields) in enumerate(data_constructors)]
 
     # 2) Derive typeclass instances for the new type constructor
     for tclass in to_derive:
         tclass.derive_instance(newtype)
 
     # 3) Wrap data constructors in TypedFunc instances
-    for i, dc_spec in enumerate(data_constructors):
-        if len(dc_spec[1]) == 0:
+    for i, (dc_name, dc_fields) in enumerate(data_constructors):
+        if len(dc_fields) == 0:
             continue
 
         return_type = TypeSignatureHKT(newtype, typeargs)
-        sig = TypeSignature(list(dc_spec[1]) + [return_type], [])
+        sig = TypeSignature(list(dc_fields) + [return_type], [])
         sig_args = build_sig(sig, {})
         dcons[i] = TypedFunc(dcons[i], sig_args, make_fn_type(sig_args))
     return tuple([newtype,] + dcons)
