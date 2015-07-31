@@ -880,6 +880,8 @@ class TestBuiltins(unittest.TestCase):
         from hask.Prelude import show
         self.assertEqual('1', show(1))
         self.assertEqual("'a'", show("a"))
+        self.assertEqual("[1, 2]", show([1, 2]))
+        self.assertEqual("{'a': 1}", show({"a": 1}))
 
     def test_enum(self):
         from hask.Prelude import fromEnum, succ, pred
@@ -2295,7 +2297,7 @@ class TestPython(unittest.TestCase):
 
     def test_builtins(self):
         from hask.Python.builtins import callable, cmp, delattr, divmod
-        from hask.Python.builtins import frozenset, getattr, hasattr, hash
+        from hask.Python.builtins import getattr, hasattr, hash
         from hask.Python.builtins import hex, isinstance, issubclass, len, oct
         from hask.Python.builtins import repr, setattr, sorted
 
