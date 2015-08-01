@@ -1757,6 +1757,8 @@ class TestList(unittest.TestCase):
         self.assertEqual("L[['a']]", show(L[['a']]))
         self.assertEqual("L[1, 2]", show(L[1, 2]))
         self.assertEqual("L[1, 2]", show(L[[1, 2]]))
+        self.assertEqual("L[1, 2, 3]", show(L[1, 2, 3]))
+        self.assertEqual("L[1, 2, 3]", show(L[1, 2, 3][:]))
 
     def test_cons(self):
         self.assertEqual(L[[1]], 1 ^ L[[]])

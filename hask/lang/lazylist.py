@@ -67,9 +67,9 @@ class Enum(Typeclass):
         def enumFromTo(start, end):
             return enumFromThenTo(start, succ(start), end)
 
-        attrs = {"toEnum":toEnum, "fromEnum":fromEnum, "succ":succ,
-                 "pred":pred, "enumFromThen":enumFromThen, "enumFrom":enumFrom,
-                 "enumFromThenTo":enumFromThenTo, "enumFromTo":enumFromTo}
+        attrs = {"toEnum": toEnum, "fromEnum": fromEnum, "succ": succ, "pred":
+                 pred, "enumFromThen": enumFromThen, "enumFrom": enumFrom,
+                 "enumFromThenTo": enumFromThenTo, "enumFromTo": enumFromTo}
         build_instance(Enum, cls, attrs)
         return
 
@@ -199,7 +199,7 @@ class List(collections.Sequence, Hask):
                 if len(self.__head) > 0:
                     unify(typeof(self[0]), typeof(next_iter))
                 self.__head.append(next_iter)
-            except StopIteration as si:
+            except StopIteration:
                 self.__is_evaluated = True
         return
 
@@ -354,7 +354,7 @@ class List(collections.Sequence, Hask):
             self.__evaluate()
 
         if is_slice:
-            if ix.stop is None:
+            if ix.stop is None and not self.__is_evaluated:
                 return List(head=self.__head[ix], tail=self.__tail)
             return List(head=self.__head[ix])
         return self.__head[i]
