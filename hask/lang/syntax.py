@@ -1001,8 +1001,9 @@ def _t(obj):
     >>> _t(Just("hello world"))
     Maybe str
     """
-    print(str(typeof(obj)))
-    return
+    return str(typeof(obj))
+
+
 
 
 def _i(obj):
