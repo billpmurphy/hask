@@ -11,7 +11,6 @@ from ..lang import caseof
 from ..lang import m
 from ..lang import p
 
-from Foldable import Foldable
 from Eq import Eq
 from Ord import Ord
 from Ord import Ordering
