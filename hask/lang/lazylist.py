@@ -57,15 +57,24 @@ class Enum(Typeclass):
             return enumFromThen(start, succ(start))
 
         def enumFromThenTo(start, second, end):
+            if start == end:
+                yield start
+                return
+
+            elif (second >= start > end) or (second <= start < end):
+                return
+
             pointer, stop = fromEnum(start), fromEnum(end)
             step = fromEnum(second) - pointer
-            while pointer <= stop:
+            while (start < end and pointer <= stop) or \
+                  (start > end and pointer >= stop):
                 yield toEnum(pointer)
                 pointer += step
             return
 
         def enumFromTo(start, end):
-            return enumFromThenTo(start, succ(start), end)
+            second = succ(start) if start < end else pred(start)
+            return enumFromThenTo(start, second, end)
 
         attrs = {"toEnum": toEnum, "fromEnum": fromEnum, "succ": succ, "pred":
                  pred, "enumFromThen": enumFromThen, "enumFrom": enumFrom,

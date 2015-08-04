@@ -1829,9 +1829,18 @@ class TestList(unittest.TestCase):
         self.assertEqual(L[[]], L[1, 3, ...][5:4])
         self.assertEqual(L[1, 3, 5, 7], L[1, 3, ..., 7])
         self.assertEqual(L[1, 3, 5, 7], L[1, 3, ..., 8])
-        self.assertEqual(L[[]], L[6, ..., 4])
-        self.assertEqual(L[[]], L[2, 3, ..., 1])
         self.assertEqual(L[2, 3], L[1,...][1:][:2])
+        self.assertEqual(L[2, 7, ..., 4], L[[2]])
+        self.assertEqual(L[[2]], L[2, 3, ..., 2])
+        self.assertEqual(L[2, 3], L[2, 3, ..., 3])
+
+        # decreasing lists
+        self.assertEqual(L[5, 4, ...][:10], L[range(5, -5, -1)])
+        self.assertEqual(L[5, 3, ...][:10], L[range(5, -15, -2)])
+        self.assertEqual(L[5, ..., 1], L[5, 4, 3, 2, 1])
+        self.assertEqual(L[5, 3, ..., -5], L[5, 3, 1, -1, -3, -5])
+        self.assertEqual(L[[]], L[2, 3, ..., 1])
+        self.assertEqual(L[[]], L[2, 2, ..., 1])
 
         # character lists
         self.assertEqual(10, len(L["a", ...][:10]))
