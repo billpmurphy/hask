@@ -280,10 +280,11 @@ def concat(xss):
 
     Concatenate a list of lists.
     """
-    l = L[[]]
-    for xs in xss:
-        l = l + xs
-    return l
+    def __concat(xss):
+        for xs in xss:
+            for x in xs:
+                yield x
+    return L[__concat(xss)]
 
 
 @sig(H/ (H/ "a" >> ["b"]) >> ["a"] >> ["b"])

@@ -1974,7 +1974,12 @@ class TestDataList(unittest.TestCase):
         from hask.Data.List import concatMap, and_, or_, any, all, sum, product
         from hask.Data.List import maximum, minimum
 
-        from hask.Data.List import repeat
+        from hask.Data.List import repeat, take
+
+        self.assertEqual(L[1, ..., 6], concat(L[L[1, 2, 3], L[4, 5, 6]]))
+        self.assertEqual(L[[]], concat(L[[]]))
+        self.assertEqual(L[1, 1, 1, 1], take(4) * concat * repeat % L[[1]])
+
         self.assertTrue(or_(L[True, True]))
         self.assertTrue(or_(L[True, False]))
         self.assertFalse(or_(L[[]]))
