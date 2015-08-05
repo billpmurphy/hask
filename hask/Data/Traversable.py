@@ -42,7 +42,7 @@ def traverse(f, t):
     and collect the results. For a version that ignores the results see
     traverse_.
     """
-    raise NotImplementedError()
+    return Traversable[t].traverse(f, t)
 
 
 @sig(H[(Applicative, "f"), (Traversable, "t")]/
@@ -54,7 +54,7 @@ def sequenceA(t):
     Evaluate each action in the structure from left to right, and and collect
     the results. For a version that ignores the results see sequenceA_.
     """
-    raise NotImplementedError()
+    return Traversable[t].sequenceA(t)
 
 
 @sig(H[(Monad, "m"), (Traversable, "t")]/
@@ -67,7 +67,7 @@ def mapM(f, m):
     from left to right, and collect the results. For a version that ignores the
     results see mapM_.
     """
-    raise NotImplementedError()
+    return Traversable[t].mapM(f, t)
 
 
 @sig(H[(Monad, "m"), (Traversable, "t")]/
@@ -79,7 +79,7 @@ def sequence(t):
     Evaluate each monadic action in the structure from left to right, and
     collect the results. For a version that ignores the results see sequence_.
     """
-    raise NotImplementedError()
+    return Traversable[t].sequence(t)
 
 
 #=============================================================================#
@@ -95,7 +95,7 @@ def for1(t, f):
     for1 is traverse with its arguments flipped. For a version that ignores the
     results see for1_.
     """
-    raise NotImplementedError()
+    return traverse(f, t)
 
 
 @sig(H[(Monad, "m"), (Traversable, "t")]/
@@ -107,7 +107,7 @@ def forM(t, f):
     forM is mapM with its arguments flipped. For a version that ignores the
     results see forM_.
     """
-    raise NotImplementedError()
+    return mapM(f, t)
 
 
 @sig(H[(Traversable, "t")]/ (H/ "a" >> "b" >> ("a", "c")) >> "a" >> t("t", "b")

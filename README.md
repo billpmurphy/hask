@@ -894,7 +894,7 @@ points:
 | `Applicative` | `Functor` | `pure` | | |
 | `Monad` | `Applicative` | `bind` | | `>>` |
 | `Monoid` | | `mappend`, `mempty` |  `mconcat` | `+` |
-| `Foldable` | | `foldr` | `fold`, `foldMap`, `foldr_`, `foldl`, `foldl_`, `foldr1`, `foldl1`, `toList`, `null`, `length`, `elem`, `maximum`, `minimum`, `sum`, `product` | `len` |
+| `Foldable` | | `foldr` | `foldr_`, `foldl`, `foldl_`, `foldr1`, `foldl1`, `toList`, `null`, `length`, `elem`, `maximum`, `minimum`, `sum`, `product` | `len`, `iter` |
 | `Traversable` | `Foldable`, `Functor` | `traverse` | `sequenceA`, `mapM`, `sequence` | |
 | `Num` | `Show`, `Eq` | `add`, `mul`, `abs`, `signum`, `fromInteger`, `negate` | `sub` | `+`, `-`, `*` |
 | `Real` | `Num`, `Ord` | `toRational` | |
@@ -920,8 +920,8 @@ points:
 | `hask.Data.Eq` | `hask.lang` | `Eq` (`==`, `!=`)
 | `hask.Data.Ord` | `hask.lang`, `hask.Data.Eq` | `Ord` (`>`, `<`, `>=`, `<=`), `Ordering` (`LT`, `EQ`, `GT`), `max`, `min`, `compare`, `comparing` |
 | `hask.Data.Functor` | `hask.lang` | `Functor` (`fmap`, `*`),  |
-| `hask.Data.Foldable` | `hask.lang` | `Foldable` |
-| `hask.Data.Traversable` | `hask.lang`, `hask.Data.Foldable`, `hask.Data.Functor` | `Traversable` |
+| `hask.Data.Foldable` | `hask.lang` | `Foldable` (`foldr`, `foldr_`, `foldl`, `foldl_`, `foldr1`, `foldl1`, `toList`, `null`, `length`, `elem`, `maximum`, `minimum`, `sum`, `product`), `foldlM`, `foldrM`, `traverse_`, `for_`, `sequenceA_`, `mapM_`, `forM_`, `sequence_`, `concat`, `concatMap` , `and_`, `or_`, `all_`, `maximumBy_`, `minimumBy`, `notElem`, `find` |
+| `hask.Data.Traversable` | `hask.lang`, `hask.Data.Foldable`, `hask.Data.Functor` | `Traversable` (`traverse`, `sequenceA`, `mapM`, `sequence`), `for1`, `forM`, `mapAccumL`, `mapAccumR` |
 | `hask.Data.Monoid` | `hask.lang` | `Monoid` (`mappend`, `mempty`, `mconcat`) |
 | `hask.Data.Ratio` | `hask.lang`, `hask.Data.Num` | `Integral`, `Ratio` (`R`), `Rational`, `toRatio`, `toRational`, `numerator`, `denominator` |
 | `hask.Data.Num` | `hask.lang`, `hask.Data.Eq`, `hask.Data.Ord` | `Num` (`+`, `*`, `abs`, `signum`, `fromInteger`, `negate`, `-`), `Fractional` (`fromRational`, `/`, `recip`), `Floating` (`exp`, `sqrt`, `log`, `pow`, `logBase`, `sin`, `tan`, `cos`, `asin`, `atan`, `acos`, `sinh`, `tanh`, `cosh`, `asinh`, `atanh`, `acosh`), `Real` (`toRational`), `Integral` (`quotRem`, `quot`, `rem`, `div`, `mod`), `toRatio`, `RealFrac` (`properFraction`, `truncate`, `round`, `ceiling`, `floor`), `RealFloat` (`isNan`, `isInfinite`, `isNegativeZero`, `atan2`) |

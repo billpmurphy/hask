@@ -4,17 +4,20 @@ import operator
 from ..lang import sig
 from ..lang import H
 from ..lang import t
+from ..lang import L
 from ..lang import Typeclass
 from ..lang import build_instance
+from ..lang import is_builtin
 from ..lang import List
-from ..lang import Ord
+from ..lang import instance
 
-import List
+import List as DL
 from ..Control.Applicative import Applicative
 from ..Control.Monad import Monad
 from Eq import Eq
 from Num import Num
 from Maybe import Maybe
+from Ord import Ord
 from Ord import Ordering
 
 
@@ -23,23 +26,51 @@ class Foldable(Typeclass):
     Data structures that can be folded.
 
     Attributes:
-        foldr, foldr1, foldl, foldl_, foldl1, foldl1_, toList, null, length,
-        elem, maximum, minimum, sum, product
+        foldr, foldr1, foldl, foldl_, foldl1, toList, null, length, elem,
+        maximum, minimum, sum, product
 
     Minimal complete definition:
         foldr
+
+    Magic methods:
+        __iter__
     """
     @classmethod
     def make_instance(typeclass, cls, foldr, foldr1=None, foldl=None,
             foldl_=None, foldl1=None, toList=None, null=None, length=None,
-            elem=None, maximum=None, minumum=None, sum=None, product=None):
+            elem=None, maximum=None, minimum=None, sum=None, product=None):
+
+        # attributes that are not supplied are implemented in terms of toList
+        if toList is None:
+            if hasattr(cls, "__iter__"):
+                toList = lambda x: L[iter(x)]
+            else:
+                toList = lambda t: foldr(lambda x, y: x ^ y, L[[]], t)
+
+        foldr1 = (lambda x: DL.foldr1(toList(x))) if foldr1 is None else foldr1
+        foldl = (lambda x: DL.foldl(toList(x))) if foldl is None else foldl
+        foldl_ = (lambda x: DL.foldl_(toList(x))) if foldl_ is None else foldl_
+        foldl1 = (lambda x: DL.foldl1(toList(x))) if foldl1 is None else foldl1
+        null = (lambda x: DL.null(toList(x))) if null is None else null
+        length = (lambda x: DL.length(toList(x))) if length is None else length
+        elem = (lambda x: DL.length(toList(x))) if length is None else length
+        mi = (lambda x: DL.minimum(toList(x))) if minimum is None else minimum
+        ma = (lambda x: DL.maximum(toList(x))) if maximum is None else maximum
+        sum = (lambda x: DL.sum(toList(x))) if sum is None else sum
+        p = (lambda x: DL.product(toList(x))) if product is None else product
+
 
         attrs = {"foldr":foldr, "foldr1":foldr1, "foldl":foldl,
-                "foldl_":foldl_, "foldl1":foldl1, "foldl1_":foldl1_,
-                "toList":toList, "null":null, "length":length, "elem":elem,
-                "maximum":maximum, "minimum":minimum, "sum":sum,
-                "product":product}
+                "foldl_":foldl_, "foldl1":foldl1, "toList":toList, "null":null,
+                "length":length, "elem":elem, "maximum":ma, "minimum":mi,
+                "sum":sum, "product":p}
         build_instance(Foldable, cls, attrs)
+
+        if not hasattr(cls, "__len__") and not is_builtin(cls):
+            cls.__len__ = length
+
+        if not hasattr(cls, "__iter__") and not is_builtin(cls):
+            cls.__iter__ = lambda x: iter(toList(x))
         return
 
 
@@ -304,7 +335,7 @@ def concat(t):
 
     The concatenation of all the elements of a container of lists.
     """
-    return List.concat(toList(t))
+    return DL.concat(toList(t))
 
 
 @sig(H[(Foldable, "t")]/ (H/ "a" >> ["b"]) >> t("t", "a") >> ["b"])
@@ -315,7 +346,7 @@ def concatMap(f, t):
     Map a function over all the elements of a container and concatenate the
     resulting lists.
     """
-    return List.concatMap(f, toList(t))
+    return DL.concatMap(f, toList(t))
 
 
 @sig(H[(Foldable, "t")]/ t("t", bool) >> bool)
@@ -327,7 +358,7 @@ def and_(t):
     True, the container must be finite; False, however, results from a False
     value finitely far from the left end.
     """
-    return List.and_(toList(t))
+    return DL.and_(toList(t))
 
 
 @sig(H[(Foldable, "t")]/ t("t", bool) >> bool)
@@ -339,7 +370,7 @@ def or_(t):
     False, the container must be finite; True, however, results from a True
     value finitely far from the left end.
     """
-    return List.or_(toList(t))
+    return DL.or_(toList(t))
 
 
 @sig(H[(Foldable, "t")]/ (H/ "a" >> bool) >> t("t", "a") >> bool)
@@ -349,7 +380,7 @@ def any_(f, t):
 
     Determines whether any element of the structure satisfies the predicate.
     """
-    return List.any_(toList(t))
+    return DL.any_(toList(t))
 
 
 @sig(H[(Foldable, "t")]/ (H/ "a" >> bool) >> t("t", "a") >> bool)
@@ -359,7 +390,7 @@ def all_(f, t):
 
     Determines whether all elements of the structure satisfy the predicate.
     """
-    return List.all_(toList(t))
+    return DL.all_(toList(t))
 
 
 @sig(H[(Foldable, "t")]/ (H/ "a" >> "a" >> Ordering) >> t("t", "a") >> "a")
@@ -370,7 +401,7 @@ def maximumBy_(f, t):
     The largest element of a non-empty structure with respect to the given
     comparison function.
     """
-    return List.maximumBy(toList(t))
+    return DL.maximumBy(toList(t))
 
 
 @sig(H[(Foldable, "t")]/ (H/ "a" >> "a" >> Ordering) >> t("t", "a") >> "a")
@@ -381,7 +412,7 @@ def minimumBy_(f, t):
     The least element of a non-empty structure with respect to the given
     comparison function.
     """
-    return List.minimumBy(toList(t))
+    return DL.minimumBy(toList(t))
 
 
 #=============================================================================#
@@ -407,4 +438,23 @@ def find(f, t):
     leftmost element of the structure matching the predicate, or Nothing if
     there is no such element.
     """
-    return List.find(f, toList(t))
+    return DL.find(f, toList(t))
+
+
+#=============================================================================#
+# Instances
+
+instance(Foldable, List).where(
+    foldr = DL.foldr,
+    foldr1 = DL.foldr1,
+    foldl = DL.foldl,
+    foldl_ = DL.foldl_,
+    foldl1 = DL.foldl1,
+    null = DL.null,
+    length = DL.length,
+    elem = DL.elem,
+    minimum = DL.minimum,
+    maximum = DL.maximum,
+    sum = DL.sum,
+    product = DL.product
+)

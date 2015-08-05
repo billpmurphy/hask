@@ -1649,7 +1649,7 @@ class TestList(unittest.TestCase):
         self.assertTrue(has_instance(List, Functor))
         self.assertTrue(has_instance(List, Applicative))
         self.assertTrue(has_instance(List, Monad))
-        #self.assertTrue(has_instance(List, Foldable))
+        self.assertTrue(has_instance(List, Foldable))
         #self.assertTrue(has_instance(List, Traversable))
 
         self.assertFalse(has_instance(List, Typeclass))
