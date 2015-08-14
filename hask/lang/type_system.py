@@ -203,6 +203,8 @@ def typeof(obj):
         An object representing the type in the internal type system language
         (i.e., a TypeOperator or TypeVariable)
     """
+    TypeVariable.next_var_name = 'a'
+
     if isinstance(obj, Hask):
         return obj.__type__()
 

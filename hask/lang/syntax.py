@@ -1004,8 +1004,6 @@ def _t(obj):
     return str(typeof(obj))
 
 
-
-
 def _i(obj):
     """
     Show information about an object. Equivalent to `:i` in Haskell or
