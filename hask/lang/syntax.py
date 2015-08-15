@@ -1,6 +1,7 @@
 import inspect
 import operator
 import string
+import sys
 from collections import deque, defaultdict
 
 from type_system import typeof
@@ -148,6 +149,9 @@ class __constraints__(Syntax):
 
     def __div__(self, arg):
         return __signature__((), self.constraints).__rshift__(arg)
+
+    def __truediv__(self, arg):
+        return self.__div__(arg)
 
 
 class __signature__(Syntax):
@@ -758,7 +762,6 @@ class __section__(Syntax):
     __add__ = __wrap(operator.add)
     __sub__ = __wrap(operator.sub)
     __mul__ = __wrap(operator.mul)
-    __div__ = __wrap(operator.div)
     __truediv__ = __wrap(operator.truediv)
     __floordiv__ = __wrap(operator.floordiv)
     __mod__ = __wrap(operator.mod)
@@ -780,7 +783,6 @@ class __section__(Syntax):
     __radd__ = __wrap(__flip(operator.add))
     __rsub__ = __wrap(__flip(operator.sub))
     __rmul__ = __wrap(__flip(operator.mul))
-    __rdiv__ = __wrap(__flip(operator.div))
     __rtruediv__ = __wrap(__flip(operator.truediv))
     __rfloordiv__ = __wrap(__flip(operator.floordiv))
     __rmod__ = __wrap(__flip(operator.mod))
@@ -791,6 +793,10 @@ class __section__(Syntax):
     __ror__ = __wrap(__flip(operator.or_))
     __rand__ = __wrap(__flip(operator.and_))
     __rxor__ = __wrap(__flip(operator.xor))
+
+    if sys.version[0] == '2':
+        __div__ = __wrap(operator.div)
+        __rdiv__ = __wrap(__flip(operator.div))
 
 
 __ = __section__("Error in section")

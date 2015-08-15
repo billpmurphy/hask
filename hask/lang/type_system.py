@@ -1,6 +1,7 @@
 import functools
 import types
 import string
+import sys
 from collections import namedtuple
 
 from hindley_milner import TypeVariable
@@ -15,29 +16,49 @@ from hindley_milner import Tuple
 from hindley_milner import ListType
 
 
+if sys.version[0] == '2':
+    lowercase = string.lowercase
+else:
+    lowercase = string.ascii_lowercase
+
+
 #=============================================================================#
 # Typeclasses
 
 
-__python_builtins__ = set((
-    types.BooleanType, types.BufferType, types.BuiltinFunctionType,
-    types.BuiltinMethodType, types.ClassType, types.CodeType,
-    types.ComplexType, types.DictProxyType, types.DictType,
-    types.DictionaryType, types.EllipsisType, types.FileType, types.FloatType,
-    types.FrameType, types.FunctionType, types.GeneratorType,
-    types.GetSetDescriptorType, types.InstanceType, types.IntType,
-    types.LambdaType, types.ListType, types.LongType,
-    types.MemberDescriptorType, types.MethodType, types.ModuleType,
-    types.NoneType, types.NotImplementedType, types.ObjectType,
-    types.SliceType, types.StringType, types.StringTypes, types.TracebackType,
-    types.TupleType, types.TypeType, types.UnboundMethodType,
-    types.UnicodeType, types.XRangeType, set, frozenset))
+if sys.version[0] == '2':
+    __python_builtins__ = set((
+        types.BooleanType, types.BufferType, types.BuiltinFunctionType,
+        types.BuiltinMethodType, types.ClassType, types.CodeType,
+        types.ComplexType, types.DictProxyType, types.DictType,
+        types.DictionaryType, types.EllipsisType, types.FileType,
+        types.FloatType, types.FrameType, types.FunctionType,
+        types.GeneratorType, types.GetSetDescriptorType, types.InstanceType,
+        types.IntType, types.LambdaType, types.ListType, types.LongType,
+        types.MemberDescriptorType, types.MethodType, types.ModuleType,
+        types.NoneType, types.NotImplementedType, types.ObjectType,
+        types.SliceType, types.StringType, types.StringTypes,
+        types.TracebackType, types.TupleType, types.TypeType,
+        types.UnboundMethodType, types.UnicodeType, types.XRangeType, set,
+        frozenset))
 
+    __python_function_types__ = set((
+        types.FunctionType, types.LambdaType, types.MethodType,
+        types.UnboundMethodType, types.BuiltinFunctionType,
+        types.BuiltinMethodType))
 
-__python_function_types__ = set((
-    types.FunctionType, types.LambdaType, types.MethodType,
-    types.UnboundMethodType, types.BuiltinFunctionType,
-    types.BuiltinMethodType))
+else:
+    __python_builtins__ = set((
+        bool, dict, type(Ellipsis), float, int, type(None), str, tuple,
+        type, types.BuiltinFunctionType, types.BuiltinMethodType,
+        types.CodeType, types.DynamicClassAttribute, types.FrameType,
+        types.FunctionType, types.GeneratorType, types.GetSetDescriptorType,
+        types.LambdaType, types.MappingProxyType, types.MemberDescriptorType,
+        types.MethodType, types.ModuleType, types.TracebackType))
+
+    __python_function_types__ = set((
+        types.FunctionType, types.LambdaType, types.MethodType,
+        types.BuiltinFunctionType, types.BuiltinMethodType))
 
 
 def is_builtin(cls):
@@ -260,7 +281,7 @@ def build_sig_arg(arg, cons, var_dict):
     Raises: TypeSignatureError, if the argument cannot be converted
     """
     # string representing type variable
-    if isinstance(arg, str) and all((l in string.lowercase for l in arg)):
+    if isinstance(arg, str) and all((l in lowercase for l in arg)):
         if arg not in var_dict:
             if arg in cons:
                 var_dict[arg] = TypeVariable(constraints=cons[arg])
