@@ -1,4 +1,5 @@
 import operator
+import sys
 
 from type_system import Typeclass
 from type_system import is_builtin
@@ -237,7 +238,6 @@ class Read(Typeclass):
 
 instance(Show, str).where(show=str.__repr__)
 instance(Show, int).where(show=int.__str__)
-instance(Show, long).where(show=long.__str__)
 instance(Show, float).where(show=tuple.__str__)
 instance(Show, complex).where(show=complex.__str__)
 instance(Show, bool).where(show=bool.__str__)
@@ -247,11 +247,9 @@ instance(Show, set).where(show=set.__str__)
 instance(Show, dict).where(show=dict.__str__)
 instance(Show, frozenset).where(show=frozenset.__str__)
 instance(Show, slice).where(show=slice.__str__)
-instance(Show, unicode).where(show=unicode.__str__)
 
 instance(Eq, str).where(eq=str.__eq__, ne=str.__ne__)
 instance(Eq, int).where(eq=int.__eq__, ne=int.__ne__)
-instance(Eq, long).where(eq=long.__eq__, ne=long.__ne__)
 instance(Eq, float).where(eq=float.__eq__, ne=float.__ne__)
 instance(Eq, complex).where(eq=complex.__eq__, ne=complex.__ne__)
 instance(Eq, bool).where(eq=bool.__eq__, ne=bool.__ne__)
@@ -261,15 +259,12 @@ instance(Eq, set).where(eq=set.__eq__, ne=set.__ne__)
 instance(Eq, dict).where(eq=dict.__eq__, ne=dict.__ne__)
 instance(Eq, frozenset).where(eq=frozenset.__eq__, ne=frozenset.__ne__)
 instance(Eq, slice).where(eq=slice.__eq__, ne=slice.__ne__)
-instance(Eq, unicode).where(eq=unicode.__eq__, ne=unicode.__ne__)
 instance(Eq, type).where(eq=type.__eq__, ne=type.__ne__)
 
 instance(Ord, str).where(lt=str.__lt__, le=str.__le__,
                          gt=str.__gt__, ge=str.__ge__)
 instance(Ord, int).where(lt=int.__lt__, le=int.__le__,
                          gt=int.__gt__, ge=int.__ge__)
-instance(Ord, long).where(lt=long.__lt__, le=long.__le__,
-                          gt=long.__gt__, ge=long.__ge__)
 instance(Ord, float).where(lt=float.__lt__, le=float.__le__,
                            gt=float.__gt__, ge=float.__ge__)
 instance(Ord, complex).where(lt=complex.__lt__, le=complex.__le__,
@@ -286,5 +281,16 @@ instance(Ord, dict).where(lt=dict.__lt__, le=dict.__le__,
                           gt=dict.__gt__, ge=dict.__ge__)
 instance(Ord, frozenset).where(lt=frozenset.__lt__, le=frozenset.__le__,
                                gt=frozenset.__gt__, ge=frozenset.__ge__)
-instance(Ord, unicode).where(lt=unicode.__lt__, le=unicode.__le__,
-                             gt=unicode.__gt__, ge=unicode.__ge__)
+
+if sys.version[0] == '2':
+
+    instance(Show, long).where(show=long.__str__)
+    instance(Show, unicode).where(show=unicode.__str__)
+
+    instance(Eq, long).where(eq=long.__eq__, ne=long.__ne__)
+    instance(Eq, unicode).where(eq=unicode.__eq__, ne=unicode.__ne__)
+
+    instance(Ord, long).where(lt=long.__lt__, le=long.__le__,
+                            gt=long.__gt__, ge=long.__ge__)
+    instance(Ord, unicode).where(lt=unicode.__lt__, le=unicode.__le__,
+                                gt=unicode.__gt__, ge=unicode.__ge__)

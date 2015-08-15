@@ -1,4 +1,5 @@
 import math
+import sys
 import unittest
 
 from hask import H, sig, t, func, TypeSignatureError
@@ -889,13 +890,10 @@ class TestBuiltins(unittest.TestCase):
         self.assertEqual("b", succ("a"))
         self.assertEqual("a", pred("b"))
         self.assertEqual(2, succ(1))
-        self.assertEqual(2L, succ(1L))
         self.assertEqual(1, pred(2))
-        self.assertEqual(1L, pred(2L))
+        self.assertEqual(0, pred(pred(2)))
+        self.assertEqual(-1, pred(pred(pred(2))))
         self.assertEqual(4, succ(succ(succ(1))))
-        self.assertEqual(4L, succ(succ(succ(1L))))
-        self.assertEqual(-1L, pred(pred(pred(2L))))
-        self.assertEqual(-1L, pred(pred(pred(2L))))
 
     def test_numerics(self):
         self.assertTrue(has_instance(int, Num))
@@ -1310,7 +1308,7 @@ class TestMaybe(unittest.TestCase):
         self.assertFalse(Nothing == Nothing and Nothing != Nothing)
         self.assertFalse(Just(1) == Just(1) and Just(1) != Just(1))
         with self.assertRaises(te): Just(1) == Just("1")
-        with self.assertRaises(te): Just(1) == Just(1L)
+        with self.assertRaises(te): Just(1) == Just(1.0)
         with self.assertRaises(te): Nothing == None
         with self.assertRaises(te): Nothing == 1
         with self.assertRaises(te): Just(1) == 1
@@ -1363,10 +1361,10 @@ class TestMaybe(unittest.TestCase):
         self.assertFalse(Just(Just(Nothing)) <= Just(Nothing))
         self.assertTrue(Just(Just(Nothing)) <= Just(Just(Nothing)))
 
-        with self.assertRaises(te): Just(1) > Just(1L)
-        with self.assertRaises(te): Just(1) >= Just(1L)
-        with self.assertRaises(te): Just(1) < Just(1L)
-        with self.assertRaises(te): Just(1) <= Just(1L)
+        with self.assertRaises(te): Just(1) > Just(1.0)
+        with self.assertRaises(te): Just(1) >= Just(1.0)
+        with self.assertRaises(te): Just(1) < Just(1.0)
+        with self.assertRaises(te): Just(1) <= Just(1.0)
         with self.assertRaises(te): Just(1) > Just(Just(1))
         with self.assertRaises(te): Just(1) >= Just(Just(1))
         with self.assertRaises(te): Just(1) < Just(Just(1))
@@ -1546,9 +1544,9 @@ class TestEither(unittest.TestCase):
         self.assertFalse(Left(3) > Left(3))
         self.assertFalse(Right(3) < Right(3))
         self.assertFalse(Left(3) < Left(3))
-        self.assertTrue(Left(2L) <= Left(2L))
+        self.assertTrue(Left(2.0) <= Left(2.0))
         self.assertTrue(Right(2) <= Right(2))
-        self.assertTrue(Left(2L) >= Left(2L))
+        self.assertTrue(Left(2.0) >= Left(2.0))
         self.assertTrue(Right(2) >= Right(2))
 
     def test_functor(self):
@@ -1859,17 +1857,16 @@ class TestList(unittest.TestCase):
         self.assertTrue(55 in L[1,...])
         self.assertFalse(4 in L[1, 3, ..., 19])
         self.assertTrue(4 not in L[1, 3, ..., 19])
-        with self.assertRaises(te): 2L in L[1, ...]
 
-        self.assertEqual(1, L[1L, 2L, 1L].count(2L))
-        self.assertEqual(2, L[1L, 2L, 1L].count(1L))
-        self.assertEqual(0, L[1L, 2L, 1L].count(4L))
-        with self.assertRaises(te): L[1L, 2L, 3L].count(1)
-
-        self.assertEqual(1, L[1L, 2L, 1L].index(2L))
-        self.assertEqual(0, L[1L, 2L, 1L].index(1L))
-        with self.assertRaises(ve): L[1L, 2L, 3L].index(4L)
-        with self.assertRaises(te): L[1L, 2L, 3L].index(1)
+        with self.assertRaises(te): "b" in L[1, ...]
+        self.assertEqual(1, L["a", "b", "a"].count("b"))
+        self.assertEqual(2, L["a", "b", "a"].count("a"))
+        self.assertEqual(0, L["a", "b", "a"].count("d"))
+        with self.assertRaises(te): L["a", "b", "c"].count(1)
+        self.assertEqual(1, L["a", "b", "a"].index("b"))
+        self.assertEqual(0, L["a", "b", "a"].index("a"))
+        with self.assertRaises(ve): L["a", "b", "c"].index("d")
+        with self.assertRaises(te): L["a", "b", "c"].index(1)
 
     def test_functor(self):
         from hask.Prelude import id, map, fmap
@@ -2001,11 +1998,9 @@ class TestDataList(unittest.TestCase):
         self.assertFalse(all(__<0, L[0, ...]))
 
         self.assertEqual(55, sum(L[1, ..., 10]))
-        self.assertEqual(55L, sum(L[1L, ..., 10L]))
         self.assertEqual(0, sum(L[[]]))
 
         self.assertEqual(3628800, product(L[1, ..., 10]))
-        self.assertEqual(3628800L, product(L[1L, ..., 10L]))
         self.assertEqual(1, product(L[[]]))
 
         self.assertEqual(10, maximum(L[0, ..., 10]))

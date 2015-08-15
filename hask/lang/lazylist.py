@@ -1,5 +1,6 @@
 import collections
 import itertools
+import sys
 
 from hindley_milner import TypeVariable
 from hindley_milner import ListType
@@ -154,9 +155,11 @@ def enumFromTo(start, end):
 
 
 instance(Enum, int).where(fromEnum=int, toEnum=int)
-instance(Enum, long).where(fromEnum=int, toEnum=long)
 instance(Enum, bool).where(fromEnum=int, toEnum=bool)
 instance(Enum, str).where(fromEnum=ord, toEnum=chr)
+
+if sys.version[0] == '2':
+    instance(Enum, long).where(fromEnum=int, toEnum=long)
 
 
 #=============================================================================#
