@@ -694,6 +694,11 @@ signature with the `(lambda x: ...) ** (H/ ...)` syntax.
 In addition, the types of the `TypedFuncs` created by sections are always
 polymorphic, to allow for any operator overloading.
 
+Note that if you are using IPython, Hask's `__` will conflict with IPython's
+special double underscore variable. To avoid conflicts, you can use `from hask
+import __ as _s` in IPython.
+
+
 ### Guards
 
 If you don't need the full power of pattern matching and just want a neater
