@@ -474,8 +474,8 @@ less than two elements:
 
 ```python
 @sig(H[(Num, "a")]/ ["a"] >> t(Maybe, "a"))
-def add_first_two(x):
-    return ~(caseof(lst)
+def add_first_two(xs):
+    return ~(caseof(xs)
                 | m(m.x ^ (m.y ^ m.z)) >> Just(p.x + p.y)
                 | m(m.x)               >> Nothing)
 
